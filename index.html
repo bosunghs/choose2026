@@ -13,9 +13,7 @@
       --muted: #64748b;
       --accent: #5f8f3f;
     }
-
     * { box-sizing: border-box; }
-
     html, body {
       margin: 0;
       width: 100%;
@@ -24,14 +22,12 @@
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
-
     body {
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
     }
-
     .card {
       width: 100%;
       max-width: 420px;
@@ -41,7 +37,6 @@
       background: var(--surface);
       text-align: left;
     }
-
     h1 {
       margin: 0 0 8px;
       font-size: 24px;
@@ -49,7 +44,6 @@
       letter-spacing: -0.04em;
       font-weight: 800;
     }
-
     p {
       margin: 0 0 20px;
       color: var(--muted);
@@ -58,8 +52,7 @@
       font-weight: 500;
       word-break: keep-all;
     }
-
-    button {
+    button, .school-link {
       width: 100%;
       min-height: 52px;
       border: 0;
@@ -70,8 +63,11 @@
       font-weight: 800;
       cursor: pointer;
       font-family: inherit;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
     .note {
       margin-top: 12px;
       color: #94a3b8;
@@ -79,29 +75,95 @@
       line-height: 1.5;
       text-align: center;
     }
+    body.inline-app {
+      display: block;
+      padding: 0;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    #inlineAppFrame {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      border: 0;
+      background: #ffffff;
+    }
   </style>
 </head>
 <body>
-  <main class="card">
+  <main class="card" id="entryCard">
     <h1>보성여고 선택과목 안내</h1>
-    <p>선택과목 안내 페이지를 새 창으로 엽니다.</p>
+    <p>선택과목 안내 페이지를 엽니다.</p>
     <button type="button" id="startBtn">열기</button>
-    <div class="note">창이 열리지 않으면 브라우저의 팝업 허용을 확인해 주세요.</div>
+    <div class="note">학교 홈페이지 안에서 열리도록 설정되어 있습니다.</div>
   </main>
 
   <script>
     (function () {
-      var APP_URL = "https://bosunghs.github.io/choose2026/app.html?v=" + Date.now() + (window.location.hash || "");
+      var SCHOOL_URL = "https://bosung.sen.hs.kr/215868/subMenu.do";
+      var APP_BASE = "https://bosunghs.github.io/choose2026/app.html";
+      var GATE_KEY = "BOSUNG_CHOOSE2026_GATE";
 
-      function openApp() {
-        var win = window.open(
-          "about:blank",
-          "choose2026_app_view",
-          "width=430,height=900,resizable=yes,scrollbars=yes"
-        );
+      function isFramed() {
+        try { return window.self !== window.top; }
+        catch (e) { return true; }
+      }
+
+      function isAllowedReferrer() {
+        var ref = document.referrer || "";
+        return ref.indexOf("https://bosung.sen.hs.kr/") === 0 ||
+               ref.indexOf("https://www.bosung.sen.hs.kr/") === 0;
+      }
+
+      function showBlocked() {
+        document.body.className = "";
+        document.body.innerHTML = '' +
+          '<main class="card">' +
+            '<h1>보성여고 선택과목 안내</h1>' +
+            '<p>이 자료는 학교 홈페이지의 선택과목 안내 메뉴에서 확인해 주세요.</p>' +
+            '<a class="school-link" href="' + SCHOOL_URL + '">학교 홈페이지에서 열기</a>' +
+          '</main>';
+      }
+
+      if (!isFramed() && !isAllowedReferrer()) {
+        showBlocked();
+        return;
+      }
+
+      function makeToken() {
+        return String(Date.now()) + "-" + String(Math.random()).slice(2);
+      }
+
+      function appUrl(token) {
+        return APP_BASE + "?v=" + Date.now() + "&gate=" + encodeURIComponent(token) + (window.location.hash || "");
+      }
+
+      function saveGate(token) {
+        try { sessionStorage.setItem(GATE_KEY, token); } catch (e) {}
+      }
+
+      function isIOS() {
+        return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+               (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      }
+
+      function openInlineApp() {
+        var token = makeToken();
+        saveGate(token);
+        document.body.className = "inline-app";
+        document.body.innerHTML = '<iframe id="inlineAppFrame" title="보성여고 선택과목 안내" scrolling="yes"></iframe>';
+        document.getElementById("inlineAppFrame").src = appUrl(token);
+      }
+
+      function openBlankApp() {
+        var token = makeToken();
+        saveGate(token);
+        var url = appUrl(token);
+        var win = window.open("about:blank", "choose2026_app_view", "width=430,height=900,resizable=yes,scrollbars=yes");
 
         if (!win) {
-          alert("팝업이 차단되었습니다. 브라우저에서 팝업 허용 후 다시 눌러주세요.");
+          openInlineApp();
           return;
         }
 
@@ -113,28 +175,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>보성여고 선택과목 안내</title>
   <style>
-    html, body {
-      margin: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #f8faf5;
-    }
-    iframe {
-      display: block;
-      width: 100vw;
-      height: 100vh;
-      height: 100svh;
-      border: 0;
-      background: #ffffff;
-    }
+    html, body { margin:0; width:100%; height:100%; overflow:hidden; background:#fff; }
+    iframe { display:block; width:100vw; height:100vh; height:100svh; border:0; background:#fff; }
   </style>
 </head>
 <body>
-  <iframe src="${APP_URL}" title="보성여고 선택과목 안내" scrolling="yes"></iframe>
+  <iframe id="appFrame" title="보성여고 선택과목 안내" scrolling="yes"></iframe>
+  <script>
+    try { sessionStorage.setItem(${JSON.stringify(GATE_KEY)}, ${JSON.stringify(token)}); } catch(e) {}
+    document.getElementById("appFrame").src = ${JSON.stringify(url)};
+  <\/script>
 </body>
 </html>`);
         win.document.close();
+      }
+
+      function openApp() {
+        if (isIOS()) openInlineApp();
+        else openBlankApp();
       }
 
       document.getElementById("startBtn").addEventListener("click", openApp);
