@@ -4,6 +4,48 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>보성여고 선택과목 안내</title>
+<script>
+(function(){
+  var SCHOOL_URL = "https://bosung.sen.hs.kr/215868/subMenu.do";
+  var GATE_KEY = "BOSUNG_CHOOSE2026_GATE";
+
+  function isFramed(){
+    try { return window.self !== window.top; }
+    catch(e) { return true; }
+  }
+
+  function getParam(name){
+    var query = window.location.search ? window.location.search.substring(1) : "";
+    var parts = query.split("&");
+    for(var i=0; i<parts.length; i++){
+      var pair = parts[i].split("=");
+      if(decodeURIComponent(pair[0] || "") === name){
+        return decodeURIComponent((pair[1] || "").replace(/\+/g, " "));
+      }
+    }
+    return "";
+  }
+
+  function isAllowedReferrer(){
+    var ref = document.referrer || "";
+    return ref.indexOf("https://bosung.sen.hs.kr/") === 0 ||
+           ref.indexOf("https://www.bosung.sen.hs.kr/") === 0 ||
+           ref.indexOf("https://bosunghs.github.io/choose2026/") === 0 ||
+           ref === "about:blank";
+  }
+
+  function hasGate(){
+    var gate = getParam("gate");
+    var stored = "";
+    try { stored = sessionStorage.getItem(GATE_KEY) || ""; } catch(e) {}
+    return !!gate && !!stored && gate === stored;
+  }
+
+  if(!isFramed() && !isAllowedReferrer() && !hasGate()){
+    window.location.replace(SCHOOL_URL);
+  }
+})();
+</script>
 <style>
 :root{--bg:#f8faf5;--surface:#fff;--surface-2:#f1f4ec;--text:#0f172a;--muted:#64748b;--line:#d2dacb;--accent:#5f8f3f;--accent-2:#8a9f42;--accent-soft:#eff7e8;--green:#4f8a3a;--orange:#ea580c;--shadow:0 14px 38px rgba(15,23,42,.09);--soft-shadow:0 6px 18px rgba(15,23,42,.06);--nav-h:34px}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Pretendard","Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:var(--text);background:radial-gradient(circle at top left,rgba(95,143,63,.10),transparent 31rem),linear-gradient(180deg,#f8faf5 0%,#fffdf2 54%,#f8faf5 100%);line-height:1.62;letter-spacing:-.01em;font-size:16px;padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px)}
@@ -680,9 +722,16 @@ const main = $('#main');
 const searchInput = $('#searchInput');
 const searchClear = $('#searchClear');
 const compareFloating = $('#compareFloating');
-const courseById = Object.fromEntries((DATA.courses||[]).map(x => [x.id, x]));
-const courseByName = Object.fromEntries((DATA.courses||[]).map(x => [x.name, x]));
-const deptById = Object.fromEntries((DATA.departments||[]).map(x => [x.id, x]));
+function keyBy(arr, key){
+  const out = {};
+  (arr || []).forEach(function(x){
+    if(x && x[key]) out[x[key]] = x;
+  });
+  return out;
+}
+const courseById = keyBy(DATA.courses || [], 'id');
+const courseByName = keyBy(DATA.courses || [], 'name');
+const deptById = keyBy(DATA.departments || [], 'id');
 const COMPARE_MAX = 4;
 const COMPARE_KEY = 'bosung_compare_semantic_v1';
 
@@ -697,7 +746,7 @@ const state = {
 };
 
 function esc(x){
-  return String(x ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  return String(x == null ? '' : x).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
 }
 function escAttr(x){ return esc(x); }
 function stripMarks(x){ return String(x || '').replace(/[#*_`>\-•]+/g,' ').replace(/\s+/g,' ').trim(); }
@@ -717,8 +766,8 @@ function prettySelectionLabel(group){
   return g.replace(/선택$/, ' 선택');
 }
 function courseTermBadge(b){
-  const term = String(b?.grade_semester || '').trim();
-  const sel = prettySelectionLabel(b?.selection_group);
+  const term = String((b && b.grade_semester) || '').trim();
+  const sel = prettySelectionLabel((b && b.selection_group));
   if(term && sel) return `${term} · ${sel}`;
   return term || sel;
 }
@@ -844,7 +893,7 @@ function updateCompareBadge(){
   compareFloating.classList.toggle('show', shouldShow);
   if(!shouldShow){ compareFloating.innerHTML = ''; return; }
   const names = items.map(compareName).filter(Boolean).join(' · ');
-  const kindLabel = items[0]?.kind === 'dept' ? '학과' : '과목';
+  const kindLabel = (items[0] && items[0].kind) === 'dept' ? '학과' : '과목';
   compareFloating.innerHTML = `<div class="compare-float-bar">
     <div class="compare-float-text"><b>${kindLabel} 비교</b><span>${esc(names || '선택한 항목')}</span></div>
     <div class="compare-float-actions"><button type="button" data-go="compare">보기</button><button type="button" class="ghost" data-action="clearCompare">전체 해제</button></div>
@@ -998,8 +1047,8 @@ function renderCourses(){
   return renderAllCourses(tabs);
 }
 function renderAllCourses(tabs=''){
-  const areas = ['전체', ...unique(DATA.courses.map(c => c.basic?.subject_area))].filter(Boolean);
-  const list = state.courseFilter === '전체' ? DATA.courses : DATA.courses.filter(c => c.basic?.subject_area === state.courseFilter);
+  const areas = ['전체', ...unique(DATA.courses.map(c => (c.basic && c.basic.subject_area)))].filter(Boolean);
+  const list = state.courseFilter === '전체' ? DATA.courses : DATA.courses.filter(c => (c.basic && c.basic.subject_area) === state.courseFilter);
   page('선택과목', `<div class="section-title"><h3>선택과목</h3></div>
     ${tabs}
     <div class="chip-row">${areas.map(a=>`<button class="chip ${state.courseFilter===a?'active':''}" data-action="courseFilter" data-value="${escAttr(a)}">${esc(a)}</button>`).join('')}</div>
@@ -1062,19 +1111,19 @@ function renderDept(id){
   <section class="doc-card"><h3>졸업 후 진로</h3>${md(d.careers_md)}</section>
   <section class="doc-card"><h3>비슷한 학과</h3>${md(d.similar_departments_md || (d.similar_departments||[]).map(x=>`- ${x}`).join('\n'))}</section>`);
 }
-function compareName(item){ const obj = item.kind === 'course' ? courseById[item.id] : deptById[item.id]; return obj?.name || ''; }
+function compareName(item){ const obj = item.kind === 'course' ? courseById[item.id] : deptById[item.id]; return (obj && obj.name) || ''; }
 function compareObj(item){ return item.kind === 'course' ? courseById[item.id] : deptById[item.id]; }
 function basicMdCourse(c){ const b=c.basic||{}; return [courseTermBadge(b), b.subject_area, b.course_type, b.credits].filter(hasUseful).map(x=>`- ${x}`).join('\n'); }
 
 function connectedCourseNamesForDept(d){
   const names = [];
-  (d?.connected_course_names || d?.priority_course_names || []).forEach(n => {
+  ((d && d.connected_course_names) || (d && d.priority_course_names) || []).forEach(n => {
     const clean = String(n || '').trim();
     if(clean && !names.includes(clean)) names.push(clean);
   });
-  (d?.connected_course_ids || d?.priority_course_ids || []).forEach(id => {
+  ((d && d.connected_course_ids) || (d && d.priority_course_ids) || []).forEach(id => {
     const c = courseById[id];
-    const name = c?.name;
+    const name = (c && c.name);
     if(name && !names.includes(name)) names.push(name);
   });
   return names;
@@ -1122,12 +1171,12 @@ function compareDeptConnectedCourses(items){
   items.forEach((item, idx) => {
     const obj = compareObj(item);
     const own = (lists[idx] || []).filter(n => !commonSet.has(n));
-    out += `<article class="compare-each-course"><b>${esc(obj?.name || '')}</b>`;
+    out += `<article class="compare-each-course"><b>${esc((obj && obj.name) || '')}</b>`;
     if(own.length){
       out += '<div class="compare-mini-pills">';
       own.forEach(n => {
         const isPartial = (freq[n] || 0) > 1;
-        const colorClass = isPartial ? ` partial-common pc-${partialColorIndex.get(n) ?? 0}` : ' unique-course';
+        const colorClass = isPartial ? ` partial-common pc-${(partialColorIndex.get(n) == null ? 0 : partialColorIndex.get(n))}` : ' unique-course';
         out += compareCourseChip(n, colorClass.trim());
       });
       out += '</div>';
@@ -1174,7 +1223,7 @@ function compareRow(title, items, key){
 function renderCompare(){
   setActive('compare');
   const items = state.compare.slice(0,COMPARE_MAX);
-  const kind = items[0]?.kind || 'course';
+  const kind = (items[0] && items[0].kind) || 'course';
   const isCourse = kind === 'course';
   const pool = isCourse ? DATA.courses : DATA.departments;
   const current = new Set(items.map(x=>x.id));
@@ -1257,11 +1306,19 @@ document.addEventListener('keydown', e => {
     e.preventDefault(); e.target.click();
   }
 });
-$('#searchToggle')?.addEventListener('click', () => {
-  document.body.classList.toggle('search-open');
-  if(document.body.classList.contains('search-open')) setTimeout(()=>searchInput?.focus(), 0);
-});
-$('#backBtn')?.addEventListener('click', () => { goBackInternal(); });
+const searchToggleBtn = $('#searchToggle');
+if(searchToggleBtn){
+  searchToggleBtn.addEventListener('click', function(){
+    document.body.classList.toggle('search-open');
+    if(document.body.classList.contains('search-open')) {
+      setTimeout(function(){ if(searchInput) searchInput.focus(); }, 0);
+    }
+  });
+}
+const backBtn = $('#backBtn');
+if(backBtn){
+  backBtn.addEventListener('click', function(){ goBackInternal(); });
+}
 function closeCurrentView(){
   try{
     if(window.parent && window.parent !== window){
@@ -1270,8 +1327,10 @@ function closeCurrentView(){
     }
   }catch(e){}
   try{
-    window.close();
-    return;
+    if(window.opener && !window.opener.closed){
+      window.close();
+      return;
+    }
   }catch(e){}
   if(window.history && window.history.length > 1){
     window.history.back();
@@ -1279,9 +1338,16 @@ function closeCurrentView(){
     routeGo('home');
   }
 }
-$('#closeViewBtn')?.addEventListener('click', closeCurrentView);
-searchInput?.addEventListener('input', e => { state.q = e.target.value; renderSearch(); });
-searchClear?.addEventListener('click', () => { clearSearch(); renderCurrent(true); });
+const closeViewBtn = $('#closeViewBtn');
+if(closeViewBtn){
+  closeViewBtn.addEventListener('click', closeCurrentView);
+}
+if(searchInput){
+  searchInput.addEventListener('input', function(e){ state.q = e.target.value; renderSearch(); });
+}
+if(searchClear){
+  searchClear.addEventListener('click', function(){ clearSearch(); renderCurrent(true); });
+}
 window.addEventListener('hashchange', () => { clearSearch(); renderCurrent(true); });
 
 renderCurrent();
