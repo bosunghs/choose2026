@@ -1173,5 +1173,102 @@ renderCurrent();
 })();
 
 </script>
+<button
+  type="button"
+  id="openFullViewBtn"
+  style="
+    position:fixed;
+    right:14px;
+    bottom:calc(46px + env(safe-area-inset-bottom));
+    z-index:9999;
+    min-height:40px;
+    padding:9px 13px;
+    border-radius:999px;
+    border:1px solid #d2dacb;
+    background:#ffffff;
+    color:#334155;
+    font-size:13px;
+    font-weight:900;
+    box-shadow:0 8px 22px rgba(15,23,42,.15);
+    cursor:pointer;
+  ">
+  전체화면
+</button>
+
+<script>
+(function () {
+  var APP_URL = "https://bosunghs.github.io/choose2026/";
+
+  var btn = document.getElementById("openFullViewBtn");
+  if (!btn) return;
+
+  btn.addEventListener("click", function () {
+    var win = window.open("", "choose2026_full_view", "width=430,height=900,resizable=yes,scrollbars=yes");
+
+    if (!win) {
+      alert("팝업이 차단되었습니다. 브라우저에서 팝업 허용 후 다시 눌러주세요.");
+      return;
+    }
+
+    win.document.open();
+    win.document.write(`
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>보성여고 선택과목 안내서</title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #f8faf5;
+    }
+    .top {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      box-sizing: border-box;
+      background: #ffffff;
+      border-bottom: 1px solid #d2dacb;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
+      font-size: 14px;
+      font-weight: 900;
+      color: #334155;
+    }
+    .top button {
+      border: 1px solid #d2dacb;
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font: inherit;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    iframe {
+      display: block;
+      width: 100%;
+      height: calc(100vh - 44px);
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <span>보성여고 선택과목 안내서</span>
+    <button onclick="window.close()">닫기</button>
+  </div>
+  <iframe src="${APP_URL}" scrolling="yes"></iframe>
+</body>
+</html>
+    `);
+    win.document.close();
+  });
+})();
+</script>
 </body>
 </html>
