@@ -5,13 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>보성여고 선택과목 안내</title>
   <style>
+    :root {
+      --bg: #f8faf5;
+      --surface: #ffffff;
+      --line: #d2dacb;
+      --text: #0f172a;
+      --muted: #64748b;
+      --accent: #5f8f3f;
+    }
+
+    * { box-sizing: border-box; }
+
     html, body {
       margin: 0;
       width: 100%;
       min-height: 100%;
-      background: #f8faf5;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      color: #334155;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
     }
 
     body {
@@ -19,95 +30,72 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      box-sizing: border-box;
     }
 
-    .start-card {
+    .card {
       width: 100%;
       max-width: 420px;
-      padding: 28px 22px;
-      box-sizing: border-box;
-      border: 1px solid #d2dacb;
-      border-radius: 24px;
-      background: #ffffff;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, .12);
-      text-align: center;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 28px;
-      padding: 0 12px;
-      border-radius: 999px;
-      background: #eef6e9;
-      color: #52734d;
-      font-size: 13px;
-      font-weight: 900;
-      margin-bottom: 14px;
+      padding: 24px 20px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--surface);
+      text-align: left;
     }
 
     h1 {
-      margin: 0;
-      font-size: 25px;
-      line-height: 1.32;
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.28;
       letter-spacing: -0.04em;
-      color: #1f2937;
+      font-weight: 800;
     }
 
     p {
-      margin: 14px 0 22px;
+      margin: 0 0 20px;
+      color: var(--muted);
       font-size: 15px;
       line-height: 1.65;
-      color: #64748b;
+      font-weight: 500;
       word-break: keep-all;
     }
 
-    .start-btn {
+    button {
       width: 100%;
-      min-height: 56px;
+      min-height: 52px;
       border: 0;
-      border-radius: 18px;
-      background: #5f7f55;
-      color: #ffffff;
-      font-size: 19px;
-      font-weight: 900;
+      border-radius: 12px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(95, 127, 85, .28);
+      font-family: inherit;
     }
 
-    .start-btn:active {
-      transform: translateY(1px);
-    }
-
-    .small {
-      margin-top: 14px;
+    .note {
+      margin-top: 12px;
+      color: #94a3b8;
       font-size: 12px;
       line-height: 1.5;
-      color: #94a3b8;
+      text-align: center;
     }
   </style>
 </head>
 <body>
-  <main class="start-card">
-    <div class="badge">2026학년도</div>
-    <h1>보성여고<br>선택과목 안내</h1>
-    <p>
-      과목별 안내, 진로·학과 연결,<br>
-      선택과목 비교 기능을 확인할 수 있습니다.
-    </p>
-    <button type="button" class="start-btn" id="startBtn">시작!</button>
-    <div class="small">버튼을 누르면 안내서가 새 창으로 열립니다.</div>
+  <main class="card">
+    <h1>보성여고 선택과목 안내</h1>
+    <p>선택과목 안내 페이지를 새 창으로 엽니다.</p>
+    <button type="button" id="startBtn">열기</button>
+    <div class="note">창이 열리지 않으면 브라우저의 팝업 허용을 확인해 주세요.</div>
   </main>
 
   <script>
     (function () {
-      var APP_URL = "https://bosunghs.github.io/choose2026/app.html?v=" + Date.now();
+      var APP_URL = "https://bosunghs.github.io/choose2026/app.html?v=" + Date.now() + (window.location.hash || "");
 
-      function openAppBlank() {
+      function openApp() {
         var win = window.open(
-          "",
+          "about:blank",
           "choose2026_app_view",
           "width=430,height=900,resizable=yes,scrollbars=yes"
         );
@@ -118,8 +106,7 @@
         }
 
         win.document.open();
-        win.document.write(`
-<!doctype html>
+        win.document.write(`<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
@@ -133,77 +120,24 @@
       overflow: hidden;
       background: #f8faf5;
     }
-
-    .wrap {
+    iframe {
+      display: block;
       width: 100vw;
       height: 100vh;
-      display: flex;
-      flex-direction: column;
-      background: #f8faf5;
-    }
-
-    .top {
-      flex: 0 0 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 0 12px;
-      box-sizing: border-box;
-      background: #ffffff;
-      border-bottom: 1px solid #d2dacb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      color: #334155;
-    }
-
-    .top b {
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      font-size: 14px;
-      font-weight: 900;
-    }
-
-    .top button {
-      flex: 0 0 auto;
-      border: 1px solid #d2dacb;
-      background: #ffffff;
-      color: #334155;
-      border-radius: 999px;
-      padding: 6px 10px;
-      font: inherit;
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    iframe {
-      flex: 1 1 auto;
-      display: block;
-      width: 100%;
-      height: calc(100vh - 44px);
+      height: 100svh;
       border: 0;
       background: #ffffff;
     }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="top">
-      <b>보성여고 선택과목 안내</b>
-      <button type="button" onclick="window.close()">닫기</button>
-    </div>
-    <iframe src="${APP_URL}" scrolling="yes"></iframe>
-  </div>
+  <iframe src="${APP_URL}" title="보성여고 선택과목 안내" scrolling="yes"></iframe>
 </body>
-</html>
-        `);
+</html>`);
         win.document.close();
       }
 
-      document.getElementById("startBtn").addEventListener("click", openAppBlank);
+      document.getElementById("startBtn").addEventListener("click", openApp);
     })();
   </script>
 </body>
