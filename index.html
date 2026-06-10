@@ -543,6 +543,7 @@ body.intro-mode main{padding:0!important}
       </div>
       <div class="header-actions">
         <button id="searchToggle" class="header-btn text-btn" type="button">검색</button>
+        <button id="openFullViewBtn" class="header-btn text-btn" type="button" aria-label="새 창에서 크게 보기">전체</button>
         <button id="backBtn" class="header-btn text-btn" type="button" aria-label="이전 화면으로 이동">이전</button>
       </div>
     </div>
@@ -1173,37 +1174,20 @@ renderCurrent();
 })();
 
 </script>
-<button
-  type="button"
-  id="openFullViewBtn"
-  style="
-    position:fixed;
-    right:14px;
-    bottom:calc(46px + env(safe-area-inset-bottom));
-    z-index:9999;
-    min-height:40px;
-    padding:9px 13px;
-    border-radius:999px;
-    border:1px solid #d2dacb;
-    background:#ffffff;
-    color:#334155;
-    font-size:13px;
-    font-weight:900;
-    box-shadow:0 8px 22px rgba(15,23,42,.15);
-    cursor:pointer;
-  ">
-  전체화면
-</button>
 
 <script>
 (function () {
   var APP_URL = "https://bosunghs.github.io/choose2026/";
 
-  var btn = document.getElementById("openFullViewBtn");
-  if (!btn) return;
+  function openFullView() {
+    var currentHash = window.location.hash || "";
+    var iframeUrl = APP_URL + currentHash;
 
-  btn.addEventListener("click", function () {
-    var win = window.open("", "choose2026_full_view", "width=430,height=900,resizable=yes,scrollbars=yes");
+    var win = window.open(
+      "about:blank",
+      "choose2026_full_view",
+      "width=430,height=900,resizable=yes,scrollbars=yes"
+    );
 
     if (!win) {
       alert("팝업이 차단되었습니다. 브라우저에서 팝업 허용 후 다시 눌러주세요.");
@@ -1211,12 +1195,11 @@ renderCurrent();
     }
 
     win.document.open();
-    win.document.write(`
-<!doctype html>
+    win.document.write(`<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>보성여고 선택과목 안내서</title>
   <style>
     html, body {
@@ -1226,49 +1209,79 @@ renderCurrent();
       overflow: hidden;
       background: #f8faf5;
     }
-    .top {
+    .full-wrap {
+      width: 100vw;
+      height: 100vh;
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+      background: #f8faf5;
+    }
+    .full-top {
+      flex: 0 0 44px;
       height: 44px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 10px;
       padding: 0 12px;
       box-sizing: border-box;
       background: #ffffff;
       border-bottom: 1px solid #d2dacb;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans KR", sans-serif;
-      font-size: 14px;
-      font-weight: 900;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
       color: #334155;
     }
-    .top button {
+    .full-top b {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+    .full-top button {
+      flex: 0 0 auto;
       border: 1px solid #d2dacb;
-      background: #fff;
+      background: #ffffff;
+      color: #334155;
       border-radius: 999px;
       padding: 6px 10px;
       font: inherit;
       font-size: 12px;
+      font-weight: 900;
       cursor: pointer;
     }
     iframe {
+      flex: 1 1 auto;
       display: block;
       width: 100%;
       height: calc(100vh - 44px);
+      height: calc(100svh - 44px);
       border: 0;
+      background: #ffffff;
     }
   </style>
 </head>
 <body>
-  <div class="top">
-    <span>보성여고 선택과목 안내서</span>
-    <button onclick="window.close()">닫기</button>
+  <div class="full-wrap">
+    <div class="full-top">
+      <b>보성여고 선택과목 안내서</b>
+      <button type="button" onclick="window.close()">닫기</button>
+    </div>
+    <iframe src="${iframeUrl}" scrolling="yes"></iframe>
   </div>
-  <iframe src="${APP_URL}" scrolling="yes"></iframe>
 </body>
-</html>
-    `);
+</html>`);
     win.document.close();
-  });
+  }
+
+  var btn = document.getElementById("openFullViewBtn");
+  if (btn) {
+    btn.addEventListener("click", openFullView);
+  }
 })();
 </script>
+
 </body>
 </html>
