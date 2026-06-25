@@ -676,6 +676,188 @@ body.has-compare-floating{padding-bottom:calc(env(safe-area-inset-bottom) + 76px
 body.has-compare-floating{padding-bottom:calc(env(safe-area-inset-bottom) + 140px)!important;}
 @media(min-width:700px){.compare-floating{bottom:calc(env(safe-area-inset-bottom) + 18px)!important;}body.has-compare-floating{padding-bottom:calc(env(safe-area-inset-bottom) + 96px)!important;}}
 
+
+
+/* V36 home guide + schedule tab */
+.top-tabs{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+.top-tabs .nav-btn{
+  padding:0 2px;
+}
+.next-schedule-card{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:12px;
+  margin:0 0 12px;
+  padding:14px 15px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:var(--soft-shadow);
+}
+.next-schedule-card .schedule-kicker{
+  display:inline-flex;
+  align-items:center;
+  min-height:23px;
+  margin-bottom:7px;
+  padding:3px 8px;
+  border-radius:999px;
+  background:#eff7e8;
+  border:1px solid #cddfc4;
+  color:#315f2d;
+  font-size:12px;
+  line-height:1.2;
+  font-weight:780;
+}
+.next-schedule-card h3{
+  margin:0;
+  color:#0f172a;
+  font-size:17px;
+  line-height:1.32;
+  font-weight:780;
+  letter-spacing:-.035em;
+  word-break:keep-all;
+}
+.next-schedule-card p{
+  margin:5px 0 0;
+  color:#475569;
+  font-size:13.5px;
+  line-height:1.48;
+  font-weight:560;
+  word-break:keep-all;
+}
+.next-schedule-card .schedule-date{
+  margin-top:6px;
+  color:#64748b;
+  font-size:12.5px;
+  line-height:1.35;
+  font-weight:720;
+}
+.next-schedule-card .schedule-dday{
+  flex:0 0 auto;
+  min-width:54px;
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:6px 9px;
+  border-radius:999px;
+  background:#f8faf5;
+  border:1px solid #ced8c5;
+  color:#315f2d;
+  font-size:12.5px;
+  line-height:1;
+  font-weight:800;
+  white-space:nowrap;
+}
+.schedule-timeline{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+  margin-top:12px;
+}
+.schedule-item{
+  display:grid;
+  grid-template-columns:84px 1fr;
+  gap:12px;
+  padding:14px;
+  border:1px solid var(--line);
+  border-radius:15px;
+  background:#fff;
+  box-shadow:var(--soft-shadow);
+}
+.schedule-item.is-current{
+  border-color:#aac98c;
+  background:linear-gradient(180deg,#ffffff,#f6fbf0);
+}
+.schedule-item.is-done{
+  opacity:.68;
+}
+.schedule-left{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+}
+.schedule-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:max-content;
+  max-width:100%;
+  min-height:24px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eff7e8;
+  border:1px solid #cddfc4;
+  color:#315f2d;
+  font-size:11.5px;
+  line-height:1.2;
+  font-weight:760;
+  white-space:nowrap;
+}
+.schedule-item.is-current .schedule-chip{
+  background:#dfeccf;
+  border-color:#bfd5a8;
+}
+.schedule-item.is-done .schedule-chip{
+  background:#f1f4ec;
+  color:#64748b;
+  border-color:#d2dacb;
+}
+.schedule-date-main{
+  color:#0f172a;
+  font-size:13px;
+  line-height:1.35;
+  font-weight:780;
+  word-break:keep-all;
+}
+.schedule-content h3{
+  margin:0;
+  color:#0f172a;
+  font-size:16px;
+  line-height:1.32;
+  font-weight:780;
+  letter-spacing:-.03em;
+  word-break:keep-all;
+}
+.schedule-content p{
+  margin:5px 0 0;
+  color:#475569;
+  font-size:13.5px;
+  line-height:1.5;
+  font-weight:540;
+  word-break:keep-all;
+}
+.schedule-note-card{
+  margin-top:12px;
+  padding:13px 14px;
+  border-radius:15px;
+  background:#fff7ed;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  font-size:13.5px;
+  line-height:1.55;
+  font-weight:620;
+  word-break:keep-all;
+}
+.home-guide-hero{
+  margin-top:12px;
+}
+@media(max-width:430px){
+  .top-tabs{gap:4px}
+  .top-tabs .nav-btn{font-size:11.2px;letter-spacing:-.04em}
+  .next-schedule-card{padding:13px 14px;border-radius:14px;gap:9px}
+  .next-schedule-card h3{font-size:16px}
+  .next-schedule-card p{font-size:13px}
+  .next-schedule-card .schedule-dday{min-width:48px;font-size:12px;padding:6px 8px}
+  .schedule-item{grid-template-columns:1fr;gap:8px;padding:13px;border-radius:14px}
+  .schedule-left{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
+  .schedule-content h3{font-size:15.5px}
+  .schedule-content p{font-size:13px}
+}
+
 </style>
 </head>
 <body>
@@ -695,9 +877,10 @@ body.has-compare-floating{padding-bottom:calc(env(safe-area-inset-bottom) + 140p
       </div>
     </div>
     <nav class="top-tabs" aria-label="주요 메뉴">
-      <button class="nav-btn" data-nav="home" data-go="home">처음으로</button>
-      <button class="nav-btn" data-nav="courses" data-go="courses">과목 안내</button>
-      <button class="nav-btn" data-nav="departments" data-go="departments">관련 학과</button>
+      <button class="nav-btn" data-nav="home" data-go="home">처음</button>
+      <button class="nav-btn" data-nav="schedule" data-go="schedule">일정</button>
+      <button class="nav-btn" data-nav="courses" data-go="courses">과목</button>
+      <button class="nav-btn" data-nav="departments" data-go="departments">학과</button>
       <button class="nav-btn" data-nav="compare" data-go="compare">비교</button>
     </nav>
     <div class="search-wrap" id="searchWrap">
@@ -962,6 +1145,92 @@ function missingPill(label){
   return `<div class="link-pill muted-pill${linkSizeClass(label)}"><span>${esc(label)}</span></div>`;
 }
 
+
+const CHOICE_SCHEDULE_EVENTS = [
+  {kind:'설명회', title:'선택과목 설명회', start:'2026-07-06', end:'2026-07-06', time:'7교시', desc:'신청 절차, 유의사항, 웹 자료 활용 방법을 안내합니다.'},
+  {kind:'상담주간', title:'1차 선택과목 상담주간', start:'2026-07-06', end:'2026-07-10', time:'', desc:'관심 과목, 관련 학과, 선택 이유, 질문 사항을 확인하고 상담에 참여합니다.'},
+  {kind:'조사', title:'1차 선호도 조사', start:'2026-07-10', end:'2026-07-10', time:'', desc:'학생 수요와 과목 개설 가능성을 검토하기 위한 1차 조사입니다.'},
+  {kind:'상담주간', title:'2차 선택과목 상담주간', start:'2026-08-18', end:'2026-08-21', time:'', desc:'1차 조사 이후 선택 내용을 다시 확인하고 조정합니다.'},
+  {kind:'조사', title:'2차 선호도 조사', start:'2026-08-21', end:'2026-08-21', time:'', desc:'개설 가능성, 폐강 검토 필요성, 시간표 편성 가능성을 검토하기 위한 조사입니다.'},
+  {kind:'상담주간', title:'3차 선택과목 상담주간', start:'2026-09-07', end:'2026-09-11', time:'', desc:'최종 수강신청 전 선택 과목, 선택군, 학기별 편성, 입력 오류를 확인합니다.'},
+  {kind:'최종', title:'최종 수강신청', start:'2026-09-11', end:'2026-09-11', time:'', desc:'실제 다음 학년도 교육과정 편성에 반영되는 확정 절차입니다.'}
+];
+function dateOnly(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+function parseLocalDate(iso){ const p=String(iso).split('-').map(Number); return new Date(p[0], p[1]-1, p[2]); }
+function daysBetween(a,b){ return Math.round((dateOnly(b) - dateOnly(a)) / 86400000); }
+function scheduleLabel(ev){
+  const s = String(ev.start || '');
+  const e = String(ev.end || ev.start || '');
+  const sd = s.split('-');
+  const ed = e.split('-');
+  const startText = `${Number(sd[1])}. ${Number(sd[2])}.`;
+  const endText = `${Number(ed[1])}. ${Number(ed[2])}.`;
+  const range = s === e ? startText : `${startText} ~ ${endText}`;
+  return ev.time ? `${range} ${ev.time}` : range;
+}
+function scheduleState(ev, today=new Date()){
+  const t = dateOnly(today);
+  const s = parseLocalDate(ev.start);
+  const e = parseLocalDate(ev.end || ev.start);
+  if(t < s) return 'upcoming';
+  if(t > e) return 'done';
+  return 'current';
+}
+function scheduleDday(ev, today=new Date()){
+  const st = scheduleState(ev, today);
+  if(st === 'current') return '진행 중';
+  if(st === 'done') return '완료';
+  const n = daysBetween(today, parseLocalDate(ev.start));
+  if(n === 0) return '오늘';
+  return `D-${n}`;
+}
+function getNextSchedule(today=new Date()){
+  const current = CHOICE_SCHEDULE_EVENTS.find(ev => scheduleState(ev, today) === 'current');
+  if(current) return {event:current, label:'현재 진행'};
+  const next = CHOICE_SCHEDULE_EVENTS.find(ev => scheduleState(ev, today) === 'upcoming');
+  if(next) return {event:next, label:'다음 일정'};
+  return {event:CHOICE_SCHEDULE_EVENTS[CHOICE_SCHEDULE_EVENTS.length - 1], label:'신청 일정 종료'};
+}
+function nextScheduleCard(){
+  const item = getNextSchedule();
+  const ev = item.event;
+  return `<section class="next-schedule-card" aria-label="${escAttr(item.label)}">
+    <div>
+      <span class="schedule-kicker">${esc(item.label)}</span>
+      <h3>${esc(ev.title)}</h3>
+      <p>${esc(ev.desc)}</p>
+      <div class="schedule-date">${esc(scheduleLabel(ev))}</div>
+    </div>
+    <span class="schedule-dday">${esc(scheduleDday(ev))}</span>
+  </section>`;
+}
+function scheduleItem(ev){
+  const st = scheduleState(ev);
+  const className = st === 'current' ? ' is-current' : (st === 'done' ? ' is-done' : '');
+  return `<article class="schedule-item${className}">
+    <div class="schedule-left">
+      <span class="schedule-chip">${esc(st === 'current' ? '진행 중' : ev.kind)}</span>
+      <span class="schedule-date-main">${esc(scheduleLabel(ev))}</span>
+    </div>
+    <div class="schedule-content">
+      <h3>${esc(ev.title)}</h3>
+      <p>${esc(ev.desc)}</p>
+    </div>
+  </article>`;
+}
+function renderSchedule(){
+  setActive('schedule');
+  page('일정', `<section class="page-hero">
+    <span class="eyebrow">선택과목 신청 일정</span>
+    <h2>상담, 조사, 최종 신청<br>순서대로 확인하세요</h2>
+    <p>1·2차 선호도 조사는 과목 개설 가능성을 검토하기 위한 절차이고, 최종 수강신청은 실제 편성에 반영되는 확정 절차입니다.</p>
+  </section>
+  <section class="doc-card"><h3>학생 확인 일정</h3>
+    <div class="schedule-timeline">${CHOICE_SCHEDULE_EVENTS.map(scheduleItem).join('')}</div>
+    <div class="schedule-note-card">교육과정위원회 검토 일정은 학생이 직접 입력하거나 참여하는 일정이 아니므로 여기에는 넣지 않았습니다. 폐강 또는 선택 조정이 필요한 경우 학교가 정한 공식 방식으로 안내됩니다.</div>
+  </section>`);
+}
+
 const HOME_GUIDE_CARDS = [
   {
     tag:'고교학점제',
@@ -1018,9 +1287,11 @@ function renderIntro(){
 }
 function renderHome(){
   setActive('home');
-  page('home', `<section class="hero home-guide-hero">
+  page('home', `${nextScheduleCard()}
+  <section class="hero home-guide-hero">
     <span class="eyebrow">선택 전 알아두기</span>
     <h2>과목을 고르기 전<br>먼저 확인할 것들</h2>
+    <p>일정은 위 카드에서 먼저 확인하고, 과목 선택 기준은 아래 안내를 차례대로 살펴보세요.</p>
   </section>
   <section class="doc-card"><h3>선택 전 핵심 안내</h3>
     <div class="home-guide-list">${HOME_GUIDE_CARDS.map(homeGuideCard).join('')}</div>
@@ -1267,6 +1538,7 @@ function renderCurrent(skipSearch=false){
   document.body.classList.remove('intro-mode');
   const {route, id} = parseHash();
   if(route === 'home' || !route) return renderHome();
+  if(route === 'schedule') return renderSchedule();
   if(route === 'courses') return renderCourses();
   if(route === 'semester') return renderSemester();
   if(route === 'departments') return renderDepartments();
@@ -1294,6 +1566,7 @@ document.addEventListener('click', e => {
     e.preventDefault();
     const go = goEl.dataset.go;
     if(go === 'home') { clearSearch(); return routeGo('home'); }
+    if(go === 'schedule') { clearSearch(); return routeGo('schedule'); }
     if(go === 'courses') { state.courseView = 'all'; clearSearch(); return routeGo('courses'); }
     if(go === 'semester') { state.courseView = 'semester'; clearSearch(); return routeGo('semester'); }
     if(go === 'departments' || go === 'compare') { clearSearch(); return routeGo(go); }
